@@ -1,0 +1,13 @@
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+  kafka:
+    image: wurstmeister/kafka
+    links:
+      - zookeeper
+    ports:
+      - 9092:9092  
+    command: /bin/bash -c "/broker_helpers/configure_and_start_broker.sh"    
+    volumes:
+      - ./broker_helpers:/broker_helpers
