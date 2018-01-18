@@ -132,6 +132,11 @@ int kafka_send(const char *topic, const char *msg)
   char errstr[512];       /* librdkafka API error reporting buffer */
   char buf[512];          /* Message value temporary buffer */
 
+  if (strlen(topic) == 0 || strlen(msg) == 0) {
+    g_print ("Topic or message is empty, no action\n");
+    return 1;
+  }
+
   g_print ("Trying to send message:\n");
   g_print ("Topic: %s\n", topic);
   g_print ("Message: %s\n", msg);
@@ -152,7 +157,7 @@ int kafka_send(const char *topic, const char *msg)
 
   rkt = rd_kafka_topic_new(rk, topic, NULL);
     if (!rkt) {
-      fprintf(stderr, "%% Failed to create topic object: %s\n", "unknown");
+      fprintf(stderr, "%% Failed to create topic object: %s\n", rd_kafka_err2str(rd_kafka_last_error()));
       rd_kafka_destroy(rk);
       return 1;
   }
@@ -166,7 +171,7 @@ int kafka_send(const char *topic, const char *msg)
         NULL                       /* Message opaque, provided in delivery report callback as msg_opaque. */
       ) == -1) 
   {
-    fprintf(stderr, "%% Failed to produce to topic %s: %s\n", rd_kafka_topic_name(rkt), "unknown");
+    fprintf(stderr, "%% Failed to produce to topic %s: %s\n", rd_kafka_topic_name(rkt), rd_kafka_err2str(rd_kafka_last_error()));
   }
 
   rd_kafka_flush(rk, 10*1000 /* wait for max 10 seconds */);
