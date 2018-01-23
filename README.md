@@ -1,6 +1,6 @@
 # gtk-kafka-manager
 
-GTK+ based Kafka client
+GTK+ based Kafka client (librdkafka C library)
 
 # Installation:
 ```
